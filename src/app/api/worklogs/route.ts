@@ -14,7 +14,7 @@ export async function POST(request: Request) {
         workDate: parsedWorkDate,
       },
     });
-    
+
     const totalHoursWorked = existingWorklogs.reduce(
       (total, log) => total + log.hoursWorked,
       0
@@ -41,9 +41,8 @@ export async function POST(request: Request) {
 
     return NextResponse.json(worklog);
   } catch (error) {
-    console.error('Error creating worklog:', error);
     return NextResponse.json(
-      { error: error.message || 'Failed to create worklog' },
+      { error: error?.message || 'Failed to create worklog' },
       { status: 500 }
     );
   }
