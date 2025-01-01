@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Text } from 'lucide-react';
 
 interface Project {
   id: number;
@@ -126,7 +127,7 @@ export default function TimesheetPage() {
     e.preventDefault();
     setLoading(true);
     setError('');
-    
+
     try {
       const response = await fetch('/api/worklogs', {
         method: 'POST',
@@ -385,35 +386,32 @@ export default function TimesheetPage() {
           <DialogContent className="h-96 overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Please Fill out the form</DialogTitle>
-              <DialogDescription>
-                <form onSubmit={handleSubmitModal} className="space-y-4">
-                  <div>
-                    <Input
-                      type="month"
-                      value={selectDate}
-                      onChange={(e) => setSelectDate(e.target.value)}
-                    />
-                  </div>
-                  <div>
-                    <Input
-                      placeholder="Hours Worked per month (max 30)"
-                      value={totalWork}
-                      onChange={(e) => setTotalWork(e.target.value)}
-                    />
-                  </div>
+              <div> {/* Replaced DialogDescription with a div to avoid <p> conflict */}
+                <div className="mb-2">
+                  <Input
+                    type="month"
+                    value={selectDate}
+                    onChange={(e) => setSelectDate(e.target.value)}
+                  />
+                </div>
+                <div className="mb-2">
+                  <Input
+                    placeholder="Hours Worked per month (max 30)"
+                    value={totalWork}
+                    onChange={(e) => setTotalWork(e.target.value)}
+                  />
+                </div>
 
-                  {totalWork && totalWork !== ""
-                    ? <p className="text-sm text-gray-500">Total Work Month: {parseInt(totalWork) * 8}</p>
-                    : null
-                  }
+                <Button type="submit" disabled={loading} onClick={handleSubmitModal}>
+                  {loading ? 'Submitting...' : 'Submit'}
+                </Button>
+                {totalWork && totalWork !== "" && (
+                  <p className="text-sm text-gray-500 mt-2">
+                    Total Work Month: {parseInt(totalWork) * 8}
+                  </p>
+                )}
+              </div>
 
-                  <Button type="submit" disabled={loading}>
-                    {loading ? 'Submitting...' : 'Submit'}
-                  </Button>
-                </form>
-              </DialogDescription>
-
-              {/* body perhitungan per user */}
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
@@ -425,7 +423,7 @@ export default function TimesheetPage() {
                   </thead>
                   <tbody>
                     {worklogsCalculated.map((log, index) => (
-                      <tr key={index} className="border-t" >
+                      <tr key={index} className="border-t">
                         <td className="p-2">{log?.userInfo?.name}</td>
                         <td className="p-2">{_calculateWorkDays(log.worklogs)}</td>
                         <td className="p-2">
@@ -440,6 +438,7 @@ export default function TimesheetPage() {
           </DialogContent>
         </Dialog>
       )}
+
     </div>
   );
 }
