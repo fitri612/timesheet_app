@@ -40,7 +40,7 @@ export async function POST(request: Request) {
     });
 
     return NextResponse.json(worklog);
-  } catch (error) {
+  } catch (error: any) {
     return NextResponse.json(
       { error: error?.message || 'Failed to create worklog' },
       { status: 500 }
